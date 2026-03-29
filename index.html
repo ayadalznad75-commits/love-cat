@@ -2,169 +2,106 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>تحبني؟ 😏</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
     body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background: #ffe6e6;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        margin: 0; padding: 0; font-family: sans-serif;
+        background: #ffe6e6; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; min-height: 100vh;
+        overflow: hidden; text-align: center;
+    }
+
+    img { width: 200px; border-radius: 20px; margin-bottom: 20px; }
+
+    /* هذا الجزء هو السر لمنع التداخل */
+    .buttons-container {
+        display: grid;
+        /* عمودين: الأول لـ "نعم" والثاني لـ "لا" */
+        grid-template-columns: 1fr 1fr; 
+        gap: 15px;
         align-items: center;
-        min-height: 100vh;
-        text-align: center;
-        overflow-x: hidden;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        padding: 20px;
-    }
-
-    img {
-        width: 60%;
-        max-width: 250px;
-        border-radius: 20px;
-        margin-bottom: 20px;
-    }
-
-    h1 {
-        font-size: 1.8rem;
-        margin-bottom: 30px;
-        color: #333;
-        min-height: 60px; /* لمنع اهتزاز الشاشة عند تغيير النص */
-    }
-
-    .buttons-wrapper {
-        display: flex;
-        flex-direction: row; /* الأزرار بجانب بعضها */
-        justify-content: center;
-        align-items: center; /* توسيط عمودي للأزرار */
-        gap: 20px;
-        width: 100%;
-        flex-wrap: wrap; /* للسماح بالنزول لسطر جديد إذا كبر الزر جداً */
+        width: 90%;
+        max-width: 400px;
+        transition: all 0.4s ease;
     }
 
     button {
+        padding: 15px;
         border: none;
-        border-radius: 15px;
-        cursor: pointer;
+        border-radius: 12px;
+        font-size: 1.2rem;
         font-weight: bold;
-        transition: all 0.3s ease; /* انسيابية في تغيير الحجم */
-        white-space: nowrap; /* لمنع النص من الانقسام لسطرين */
+        cursor: pointer;
+        width: 100%; /* ليملأ مساحة العمود الخاص به */
+        transition: all 0.3s ease;
     }
 
-    #yes {
-        background: #28a745;
-        color: white;
-        padding: 15px 30px;
-        font-size: 1.2rem;
-        order: 1; /* لضمان بقائه الأول دائماً */
-    }
+    #yes { background: #28a745; color: white; }
+    #no { background: #dc3545; color: white; }
 
-    #no {
-        background: #dc3545;
-        color: white;
-        padding: 15px 30px;
-        font-size: 1.2rem;
-        order: 2;
-    }
-
-    .heart {
-        position: fixed;
-        bottom: 0;
-        font-size: 2rem;
-        animation: floatUp 3s linear forwards;
-    }
-
-    @keyframes floatUp {
-        0% { transform: translateY(0); opacity: 1; }
-        100% { transform: translateY(-100vh); opacity: 0; }
-    }
+    .heart { position: fixed; bottom: 0; animation: float 3s linear forwards; }
+    @keyframes float { 100% { transform: translateY(-100vh); opacity: 0; } }
 </style>
 </head>
-
 <body>
 
-<div class="container">
     <img id="mainImage" src="قطة.jpg">
-    <h1 id="question">هل انت تحبني؟ 💖</h1>
+    <h1 id="question">تحبني؟ 💖</h1>
 
-    <div class="buttons-wrapper">
+    <div class="buttons-container" id="gridContainer">
         <button id="yes">نعم</button>
         <button id="no">لا</button>
     </div>
-</div>
 
 <script>
     let yesBtn = document.getElementById("yes");
     let noBtn = document.getElementById("no");
+    let grid = document.getElementById("gridContainer");
     let img = document.getElementById("mainImage");
     let question = document.getElementById("question");
 
-    // نستخدم قيم رقمية للتحكم بالحجم الحقيقي
-    let paddingVal = 15;
-    let fontSizeVal = 1.2;
+    let yesGrowth = 1; // نسبة نمو زر نعم
+    let noShrink = 1;  // نسبة تقلص زر لا
     let index = 0;
+    let texts = ["ليش؟ 😢", "متأكد؟ 😔", "فكر مرة ثانية 💔", "زعلت 😭"];
 
-    let texts = [
-        "ليش لا؟ 😢",
-        "فكري زين 😔",
-        "حرام عليك 💔",
-        "راح ازعل 😭",
-        "آخر فرصة 😡"
-    ];
-
-    noBtn.addEventListener("click", function() {
-        // تغيير الصورة والنص
+    noBtn.addEventListener("click", () => {
+        // 1. تغيير الصورة والنص
         img.src = "قطة نو.jpg";
-        if(index < texts.length) {
-            question.innerText = texts[index];
-            index++;
-        }
+        if(index < texts.length) question.innerText = texts[index++];
 
-        // تكبير زر "نعم" فعلياً (تغيير الحشو والخط)
-        paddingVal += 15; // زيادة الحشو (الوسع)
-        fontSizeVal += 0.4; // زيادة حجم الخط
+        // 2. السر هنا: نغير تقسيم الأعمدة في الـ Grid
+        // نجعل العمود الأول (نعم) يكبر والعمود الثاني (لا) يصغر
+        yesGrowth += 0.5;
+        noShrink -= 0.2;
 
-        yesBtn.style.padding = paddingVal + "px " + (paddingVal * 2) + "px";
-        yesBtn.style.fontSize = fontSizeVal + "rem";
+        grid.style.gridTemplateColumns = `${yesGrowth}fr ${noShrink}fr`;
+        
+        // 3. نكبر الخط داخل الزر أيضاً
+        yesBtn.style.fontSize = (1.2 + (yesGrowth * 0.2)) + "rem";
 
-        // تصغير زر "لا" تدريجياً
-        let currentNoScale = parseFloat(noBtn.style.transform.replace('scale(', '').replace(')', '')) || 1;
-        currentNoScale -= 0.15;
-        noBtn.style.transform = `scale(${currentNoScale})`;
-
-        if(currentNoScale <= 0.4) {
+        // 4. إخفاء "لا" تماماً إذا صغر جداً
+        if(noShrink <= 0.2) {
             noBtn.style.display = "none";
+            grid.style.gridTemplateColumns = "1fr";
         }
     });
 
-    yesBtn.addEventListener("click", function() {
-        question.innerText = "كنت ادري 😎❤️";
+    yesBtn.addEventListener("click", () => {
+        question.innerText = "كنت أدري! 😎❤️";
         img.src = "قطة يس.jpg";
         noBtn.style.display = "none";
+        grid.style.gridTemplateColumns = "1fr";
         
-        // إعادة زر نعم لحجم معقول عند الفوز
-        yesBtn.style.padding = "20px 40px";
-        yesBtn.style.fontSize = "1.5rem";
-
-        for(let i=0; i<20; i++) {
-            let heart = document.createElement("div");
-            heart.classList.add("heart");
-            heart.innerText = "💖";
-            heart.style.left = Math.random() * 100 + "vw";
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 3000);
+        for(let i=0; i<15; i++) {
+            let h = document.createElement("div");
+            h.className = "heart"; h.innerText = "💖";
+            h.style.left = Math.random() * 100 + "vw";
+            h.style.fontSize = (20 + Math.random() * 20) + "px";
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 3000);
         }
     });
 </script>
-
 </body>
 </html>
