@@ -1,168 +1,175 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <title>تحبني؟ 😏</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
-    body{
-        margin:0;
-        padding:0;
-        font-family: Arial;
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: #ffe6e6;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center; /* توسيط العناصر عمودياً */
         align-items: center;
         min-height: 100vh;
-        overflow:hidden;
+        overflow: hidden;
         text-align: center;
     }
 
-    img{
-        width: 50%;
+    .container {
+        width: 100%;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px; /* مسافة بين العناصر */
+    }
+
+    img {
+        width: 80%; /* تكبير الصورة لتناسب الموبايل */
         max-width: 300px;
-        border-radius:20px;
-        margin-top: 20px;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
 
-    h1{
-        font-size: 6vw; /* يتغير حسب حجم الشاشة */
-        margin: 20px 0;
-        transition:0.3s;
+    h1 {
+        font-size: 2rem; /* استخدام rem بدلاً من vw للثبات */
+        margin: 10px 0;
+        color: #d63384;
+        min-height: 3.5rem; /* حجز مساحة للنص حتى لا تقفز العناصر */
     }
 
-    .buttons{
-        margin-bottom: 20px;
+    .buttons {
+        display: flex;
+        flex-wrap: wrap; /* للسماح بالالتفاف في الشاشات الصغيرة جداً */
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        min-height: 150px; /* مساحة لزر "نعم" عندما يكبر */
     }
 
-    button{
-        padding:12px 25px;
-        font-size:4vw;
-        margin:10px;
-        border:none;
-        border-radius:10px;
-        cursor:pointer;
-        transition:0.3s;
+    button {
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        border: none;
+        border-radius: 50px; /* جعل الأزرار دائرية أكثر */
+        cursor: pointer;
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        touch-action: manipulation; /* لتحسين الاستجابة على اللمس */
     }
 
-    #yes{
-        background:green;
-        color:white;
+    #yes {
+        background: #28a745;
+        color: white;
+        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        z-index: 10;
     }
 
-    #no{
-        background:red;
-        color:white;
+    #no {
+        background: #dc3545;
+        color: white;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
     }
 
     /* القلوب */
-    .heart{
-        position:fixed;
-        bottom:0;
-        font-size:5vw;
+    .heart {
+        position: fixed;
+        bottom: -50px;
+        font-size: 2rem;
         animation: floatUp 3s linear forwards;
+        z-index: 999;
     }
 
     @keyframes floatUp {
-        0%{
-            transform: translateY(0);
-            opacity:1;
-        }
-        100%{
-            transform: translateY(-100vh);
-            opacity:0;
-        }
-    }
-
-    /* لجعل الأزرار أكبر على شاشات صغيرة */
-    @media(max-width:600px){
-        button{
-            font-size:5vw;
-            padding:15px 20px;
-        }
+        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
     }
 </style>
 </head>
 
 <body>
 
-<img id="mainImage" src="قطة.jpg">
-
-<h1 id="question">هل انت تحبيني؟ 💖</h1>
-
-<div class="buttons">
-    <button id="yes">نعم</button>
-    <button id="no">لا</button>
+<div class="container">
+    <img id="mainImage" src="قطة.jpg" alt="قطة">
+    <h1 id="question">هل انت تحبني؟ 💖</h1>
+    <div class="buttons">
+        <button id="yes">نعم</button>
+        <button id="no">لا</button>
+    </div>
 </div>
 
 <script>
-let yesBtn = document.getElementById("yes");
-let noBtn = document.getElementById("no");
-let img = document.getElementById("mainImage");
-let question = document.getElementById("question");
+    let yesBtn = document.getElementById("yes");
+    let noBtn = document.getElementById("no");
+    let img = document.getElementById("mainImage");
+    let question = document.getElementById("question");
 
-let scaleYes = 1;
-let scaleNo = 1;
-let changed = false;
+    let scaleYes = 1;
+    let scaleNo = 1;
+    let changed = false;
 
-// العبارات
-let texts = [
-    "ليش لا؟ 😢",
-    "فكري زين 😔",
-    "حرام عليك 💔",
-    "راح ازعل 😭",
-    "آخر فرصة 😡"
-];
+    let texts = [
+        "ليش لا؟ 😢",
+        "فكري زين 😔",
+        "حرام عليك 💔",
+        "راح ازعل 😭",
+        "آخر فرصة 😡"
+    ];
 
-let index = 0;
+    let index = 0;
 
-noBtn.addEventListener("click", function(){
+    noBtn.addEventListener("click", function() {
+        if(!changed) {
+            img.src = "قطة نو.jpg";
+            changed = true;
+        }
 
-    if(!changed){
-        img.src = "قطة نو.jpg";
-        changed = true;
-    }
+        if(index < texts.length) {
+            question.innerText = texts[index];
+            index++;
+        }
 
-    if(index < texts.length){
-        question.innerText = texts[index];
-        index++;
-    } else {
-        question.style.display = "none";
-    }
+        scaleYes += 0.4; // زيادة حجم التكبير ليصبح أوضح
+        scaleNo -= 0.15;
 
-    scaleYes += 0.3;
-    scaleNo -= 0.2;
+        yesBtn.style.transform = `scale(${scaleYes})`;
+        noBtn.style.transform = `scale(${scaleNo})`;
 
-    yesBtn.style.transform = "scale(" + scaleYes + ")";
-    noBtn.style.transform = "scale(" + scaleNo + ")";
+        if(scaleNo <= 0.3) {
+            noBtn.style.visibility = "hidden"; // إخفاء مع الحفاظ على المساحة
+        }
+    });
 
-    if(scaleNo <= 0.2){
+    yesBtn.addEventListener("click", function() {
+        question.innerText = "كنت ادري 😎❤️";
+        img.src = "قطة يس.jpg";
         noBtn.style.display = "none";
-    }
-});
+        yesBtn.style.transform = "scale(1.2)";
 
-// عند الضغط على نعم
-yesBtn.addEventListener("click", function(){
-    question.innerText = "كنت ادري 😎❤️";
-    img.src = "قطة يس.jpg";
+        for(let i=0; i<25; i++) {
+            setTimeout(createHeart, i * 100);
+        }
+    });
 
-    // توليد قلوب
-    for(let i=0; i<20; i++){
+    function createHeart() {
         let heart = document.createElement("div");
         heart.classList.add("heart");
         heart.innerText = "💖";
-
         heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = (8 + Math.random()*5) + "vw";
-
+        heart.style.fontSize = (Math.random() * 20 + 20) + "px";
         document.body.appendChild(heart);
-
-        setTimeout(() => {
-            heart.remove();
-        }, 3000);
+        setTimeout(() => heart.remove(), 3000);
     }
-});
 </script>
 
 </body>
