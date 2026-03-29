@@ -3,96 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <title>تحبني؟ 😏</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-    * {
-        box-sizing: border-box;
-    }
-
     body {
         margin: 0;
         padding: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: Arial, sans-serif;
         background: #ffe6e6;
         display: flex;
         flex-direction: column;
-        justify-content: center; /* توسيط العناصر عمودياً */
+        justify-content: center;
         align-items: center;
         min-height: 100vh;
-        overflow: hidden;
         text-align: center;
+        overflow-x: hidden;
     }
 
     .container {
-        width: 100%;
-        padding: 20px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 20px; /* مسافة بين العناصر */
+        width: 100%;
+        padding: 20px;
     }
 
     img {
-        width: 80%; /* تكبير الصورة لتناسب الموبايل */
-        max-width: 300px;
-        height: auto;
+        width: 60%;
+        max-width: 250px;
         border-radius: 20px;
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
     }
 
     h1 {
-        font-size: 2rem; /* استخدام rem بدلاً من vw للثبات */
-        margin: 10px 0;
-        color: #d63384;
-        min-height: 3.5rem; /* حجز مساحة للنص حتى لا تقفز العناصر */
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        color: #333;
+        min-height: 60px; /* لمنع اهتزاز الشاشة عند تغيير النص */
     }
 
-    .buttons {
+    .buttons-wrapper {
         display: flex;
-        flex-wrap: wrap; /* للسماح بالالتفاف في الشاشات الصغيرة جداً */
+        flex-direction: row; /* الأزرار بجانب بعضها */
         justify-content: center;
-        align-items: center;
-        gap: 15px;
+        align-items: center; /* توسيط عمودي للأزرار */
+        gap: 20px;
         width: 100%;
-        min-height: 150px; /* مساحة لزر "نعم" عندما يكبر */
+        flex-wrap: wrap; /* للسماح بالنزول لسطر جديد إذا كبر الزر جداً */
     }
 
     button {
-        padding: 15px 30px;
-        font-size: 1.2rem;
-        font-weight: bold;
         border: none;
-        border-radius: 50px; /* جعل الأزرار دائرية أكثر */
+        border-radius: 15px;
         cursor: pointer;
-        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        touch-action: manipulation; /* لتحسين الاستجابة على اللمس */
+        font-weight: bold;
+        transition: all 0.3s ease; /* انسيابية في تغيير الحجم */
+        white-space: nowrap; /* لمنع النص من الانقسام لسطرين */
     }
 
     #yes {
         background: #28a745;
         color: white;
-        box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
-        z-index: 10;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        order: 1; /* لضمان بقائه الأول دائماً */
     }
 
     #no {
         background: #dc3545;
         color: white;
-        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        order: 2;
     }
 
-    /* القلوب */
     .heart {
         position: fixed;
-        bottom: -50px;
+        bottom: 0;
         font-size: 2rem;
         animation: floatUp 3s linear forwards;
-        z-index: 999;
     }
 
     @keyframes floatUp {
-        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        0% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(-100vh); opacity: 0; }
     }
 </style>
 </head>
@@ -100,9 +93,10 @@
 <body>
 
 <div class="container">
-    <img id="mainImage" src="قطة.jpg" alt="قطة">
+    <img id="mainImage" src="قطة.jpg">
     <h1 id="question">هل انت تحبني؟ 💖</h1>
-    <div class="buttons">
+
+    <div class="buttons-wrapper">
         <button id="yes">نعم</button>
         <button id="no">لا</button>
     </div>
@@ -114,9 +108,10 @@
     let img = document.getElementById("mainImage");
     let question = document.getElementById("question");
 
-    let scaleYes = 1;
-    let scaleNo = 1;
-    let changed = false;
+    // نستخدم قيم رقمية للتحكم بالحجم الحقيقي
+    let paddingVal = 15;
+    let fontSizeVal = 1.2;
+    let index = 0;
 
     let texts = [
         "ليش لا؟ 😢",
@@ -126,27 +121,28 @@
         "آخر فرصة 😡"
     ];
 
-    let index = 0;
-
     noBtn.addEventListener("click", function() {
-        if(!changed) {
-            img.src = "قطة نو.jpg";
-            changed = true;
-        }
-
+        // تغيير الصورة والنص
+        img.src = "قطة نو.jpg";
         if(index < texts.length) {
             question.innerText = texts[index];
             index++;
         }
 
-        scaleYes += 0.4; // زيادة حجم التكبير ليصبح أوضح
-        scaleNo -= 0.15;
+        // تكبير زر "نعم" فعلياً (تغيير الحشو والخط)
+        paddingVal += 15; // زيادة الحشو (الوسع)
+        fontSizeVal += 0.4; // زيادة حجم الخط
 
-        yesBtn.style.transform = `scale(${scaleYes})`;
-        noBtn.style.transform = `scale(${scaleNo})`;
+        yesBtn.style.padding = paddingVal + "px " + (paddingVal * 2) + "px";
+        yesBtn.style.fontSize = fontSizeVal + "rem";
 
-        if(scaleNo <= 0.3) {
-            noBtn.style.visibility = "hidden"; // إخفاء مع الحفاظ على المساحة
+        // تصغير زر "لا" تدريجياً
+        let currentNoScale = parseFloat(noBtn.style.transform.replace('scale(', '').replace(')', '')) || 1;
+        currentNoScale -= 0.15;
+        noBtn.style.transform = `scale(${currentNoScale})`;
+
+        if(currentNoScale <= 0.4) {
+            noBtn.style.display = "none";
         }
     });
 
@@ -154,22 +150,20 @@
         question.innerText = "كنت ادري 😎❤️";
         img.src = "قطة يس.jpg";
         noBtn.style.display = "none";
-        yesBtn.style.transform = "scale(1.2)";
+        
+        // إعادة زر نعم لحجم معقول عند الفوز
+        yesBtn.style.padding = "20px 40px";
+        yesBtn.style.fontSize = "1.5rem";
 
-        for(let i=0; i<25; i++) {
-            setTimeout(createHeart, i * 100);
+        for(let i=0; i<20; i++) {
+            let heart = document.createElement("div");
+            heart.classList.add("heart");
+            heart.innerText = "💖";
+            heart.style.left = Math.random() * 100 + "vw";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 3000);
         }
     });
-
-    function createHeart() {
-        let heart = document.createElement("div");
-        heart.classList.add("heart");
-        heart.innerText = "💖";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = (Math.random() * 20 + 20) + "px";
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 3000);
-    }
 </script>
 
 </body>
