@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>تحبني؟ 😏</title>
+<style>
+    body{
+        text-align:center;
+        font-family: Arial;
+        background: #ffe6e6;
+        margin-top:50px;
+        overflow:hidden;
+    }
+
+    img{
+        width:200px;
+        border-radius:20px;
+        margin-bottom:20px;
+    }
+
+    h1{
+        font-size:40px;
+        transition:0.3s;
+    }
+
+    button{
+        padding:15px 30px;
+        font-size:20px;
+        margin:10px;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+        transition:0.3s;
+    }
+
+    #yes{
+        background:green;
+        color:white;
+    }
+
+    #no{
+        background:red;
+        color:white;
+    }
+
+    /* القلوب */
+    .heart{
+        position:fixed;
+        bottom:0;
+        font-size:25px;
+        animation: floatUp 3s linear forwards;
+    }
+
+    @keyframes floatUp {
+        0%{
+            transform: translateY(0);
+            opacity:1;
+        }
+        100%{
+            transform: translateY(-100vh);
+            opacity:0;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<img id="mainImage" src="قطة.jpg">
+
+<h1 id="question">هل انت تحبيني؟ 💖</h1>
+
+<button id="yes">نعم</button>
+<button id="no">لا</button>
+
+<script>
+let yesBtn = document.getElementById("yes");
+let noBtn = document.getElementById("no");
+let img = document.getElementById("mainImage");
+let question = document.getElementById("question");
+
+let scaleYes = 1;
+let scaleNo = 1;
+let changed = false;
+
+// العبارات
+let texts = [
+    "ليش لا؟ 😢",
+    "فكري زين 😔",
+    "حرام عليك 💔",
+    "راح ازعل 😭",
+    "آخر فرصة 😡"
+];
+
+let index = 0;
+
+noBtn.addEventListener("click", function(){
+
+    if(!changed){
+        img.src = "قطة نو.jpg";
+        changed = true;
+    }
+
+    if(index < texts.length){
+        question.innerText = texts[index];
+        index++;
+    } else {
+        question.style.display = "none";
+    }
+
+    scaleYes += 0.3;
+    scaleNo -= 0.2;
+
+    yesBtn.style.transform = "scale(" + scaleYes + ")";
+    noBtn.style.transform = "scale(" + scaleNo + ")";
+
+    if(scaleNo <= 0.2){
+        noBtn.style.display = "none";
+    }
+});
+
+// عند الضغط على نعم
+yesBtn.addEventListener("click", function(){
+    question.innerText = "كنت ادري 😎❤️";
+    img.src = "قطة يس.jpg"; // غير الصورة هنا
+
+    // توليد قلوب
+    for(let i=0; i<20; i++){
+        let heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.innerText = "💖";
+
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = (20 + Math.random()*30) + "px";
+
+        document.body.appendChild(heart);
+
+        // حذف القلب بعد انتهاء الانيميشن
+        setTimeout(() => {
+            heart.remove();
+        }, 3000);
+    }
+});
+</script>
+
+</body>
+</html>
