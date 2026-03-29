@@ -3,29 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <title>تحبني؟ 😏</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
     body{
-        text-align:center;
+        margin:0;
+        padding:0;
         font-family: Arial;
         background: #ffe6e6;
-        margin-top:50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        min-height: 100vh;
         overflow:hidden;
+        text-align: center;
     }
 
     img{
-        width:200px;
+        width: 50%;
+        max-width: 300px;
         border-radius:20px;
-        margin-bottom:20px;
+        margin-top: 20px;
     }
 
     h1{
-        font-size:40px;
+        font-size: 6vw; /* يتغير حسب حجم الشاشة */
+        margin: 20px 0;
         transition:0.3s;
     }
 
+    .buttons{
+        margin-bottom: 20px;
+    }
+
     button{
-        padding:15px 30px;
-        font-size:20px;
+        padding:12px 25px;
+        font-size:4vw;
         margin:10px;
         border:none;
         border-radius:10px;
@@ -47,7 +60,7 @@
     .heart{
         position:fixed;
         bottom:0;
-        font-size:25px;
+        font-size:5vw;
         animation: floatUp 3s linear forwards;
     }
 
@@ -61,6 +74,14 @@
             opacity:0;
         }
     }
+
+    /* لجعل الأزرار أكبر على شاشات صغيرة */
+    @media(max-width:600px){
+        button{
+            font-size:5vw;
+            padding:15px 20px;
+        }
+    }
 </style>
 </head>
 
@@ -70,8 +91,10 @@
 
 <h1 id="question">هل انت تحبيني؟ 💖</h1>
 
-<button id="yes">نعم</button>
-<button id="no">لا</button>
+<div class="buttons">
+    <button id="yes">نعم</button>
+    <button id="no">لا</button>
+</div>
 
 <script>
 let yesBtn = document.getElementById("yes");
@@ -122,7 +145,7 @@ noBtn.addEventListener("click", function(){
 // عند الضغط على نعم
 yesBtn.addEventListener("click", function(){
     question.innerText = "كنت ادري 😎❤️";
-    img.src = "قطة يس.jpg"; // غير الصورة هنا
+    img.src = "قطة يس.jpg";
 
     // توليد قلوب
     for(let i=0; i<20; i++){
@@ -131,11 +154,10 @@ yesBtn.addEventListener("click", function(){
         heart.innerText = "💖";
 
         heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = (20 + Math.random()*30) + "px";
+        heart.style.fontSize = (8 + Math.random()*5) + "vw";
 
         document.body.appendChild(heart);
 
-        // حذف القلب بعد انتهاء الانيميشن
         setTimeout(() => {
             heart.remove();
         }, 3000);
